@@ -17,7 +17,6 @@
 		    height: 100%;
 		}
 
-		/*EXPERIMENT WITH DIFFERENT STYLING FOR THE CIRCLES AND WHAT HAPPENS WHEN THE MOUSE HOVERS OVER THEM*/
 		circle {
 			fill-opacity: .3;
 			fill: red;
@@ -29,7 +28,6 @@
 		  	cursor: crosshair;
 		}
 
-		/*EXPERIMENT WITH YOUR OWN STYLING RULES TO CHANGE THE APPEARANCE OF THE TOOLTIP, THE MENU, AND THE MESSAGE TEXT*/
 		div.tooltip{
 			padding: 6px;
 			background: white;
@@ -66,13 +64,11 @@
 
 	<div id="map"></div>
 
-	<!-- CHANGE THE STRUCTURE OF THE TOOLTIP TO DISPLAY THE LATITUDE AND LONGITUDE OF EACH POINT. ALSO, YOU COULD TRY TO DISPLAY ANOTHER PIECE OF DATA ABOUT THE POINT, BUT REMEMBER YOU FIRST NEED TO MAKE SURE TO SEND THIS DATA BACK FROM THE SERVER -->
 	<div class="tooltip">
 		<p class="tooltip-text" id="title">This is the title</p>
 		<p class="tooltip-text" id="price">This is the price</p>
 	</div>
 
-	<!-- EXPERIMENT WITH OTHER FORM ELEMENTS, AND ADD SOME TEXT TO THE MENU TO EXPLAIN WHAT IS HAPPENING ON THE SITE -->
 	<div class="menu">
 		<p><h4>DMC Web Stack</h4></p>
 		<form>
@@ -93,7 +89,6 @@
 			eventOutputContainer.innerHTML = e.data;
 		};
 
-		// DON'T FORGET TO CHANGE THIS CODE DEPENDING ON THE DATA YOU'RE DISPLAYING IN YOUR TOOLTIP
 		var tooltip = d3.select("div.tooltip");
 		var tooltip_title = d3.select("#title");
 		var tooltip_price = d3.select("#price");

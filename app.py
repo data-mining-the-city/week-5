@@ -34,8 +34,6 @@ def index():
 @app.route("/getData/")
 def getData():
 
-	# TRY TO SEND BACK OTHER MESSAGES FROM THE SERVER. 
-	# MAKE SURE THE MESSAGES ARE BEING DISPLAYED ON THE FRONT END.
 	q.put("starting data query...")
 
 	lat1 = str(request.args.get('lat1'))
