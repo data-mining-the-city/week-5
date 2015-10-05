@@ -7,6 +7,7 @@ import json
 import time
 import sys
 import random
+import math
 
 import pyorient
 
@@ -40,6 +41,10 @@ def getData():
 	lng1 = str(request.args.get('lng1'))
 	lat2 = str(request.args.get('lat2'))
 	lng2 = str(request.args.get('lng2'))
+
+	w = float(request.args.get('w'))
+	h = float(request.args.get('h'))
+	res = float(request.args.get('res'))
 
 	print "received coordinates: [" + lat1 + ", " + lat2 + "], [" + lng1 + ", " + lng2 + "]"
 	
@@ -79,7 +84,36 @@ def getData():
 
 		output["features"].append(feature)
 
+	numW = int(math.floor(w/res))
+	numH = int(math.floor(h/res))
+
+	offsetLeft = (w - numW * res) / 2.0 ;
+	offsetTop = (h - numH * res) / 2.0 ;
+
 	q.put('idle')
+
+	output["analysis"] = []
+
+	# grid = []
+
+	# for j in range(numH):
+	# 	grid.append([])
+	# 	for i in range(numW):
+	# 		grid[-1].append(0)
+
+	for j in range(numH):
+		for i in range(numW):
+			newItem = {}
+
+			newItem['x'] = offsetLeft + i*res
+			newItem['y'] = offsetTop + j*res
+			newItem['width'] = res-1
+			newItem['height'] = res-1
+
+			# newItem['val'] = grid[j][i]
+			newItem['value'] = .5
+
+			output["analysis"].append(newItem)
 
 	return json.dumps(output)
 

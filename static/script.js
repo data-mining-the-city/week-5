@@ -31,6 +31,11 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 
 //create variables to store a reference to svg and g elements
 
+var svg_overlay = d3.select(map.getPanes().overlayPane).append("svg")
+			.attr("width",window.innerWidth)
+			.attr("height",window.innerHeight);
+var g_overlay = svg_overlay.append("g").attr("class", "leaflet-zoom-hide");
+
 var svg = d3.select(map.getPanes().overlayPane).append("svg");
 var g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
@@ -54,7 +59,12 @@ function updateData(){
 	var lng1 = mapBounds["_southWest"]["lng"];
 	var lng2 = mapBounds["_northEast"]["lng"];
 
-	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2
+	var w = window.innerWidth;
+	var h = window.innerHeight;
+
+	res = 25;
+
+	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2 + "&w=" + w + "&h=" + h + "&res=" + res
 
 	console.log(request);
 
@@ -79,8 +89,30 @@ function updateData(){
 			})
 		;
 
+		// call function to 
+		update();
+		map.on("viewreset", update);
+
+		var rectangles = g_overlay.selectAll("rect").data(data.analysis);
+
+		rectangles.enter().append("rect");
+		// rectangles.exit().remove();
+
+		var topleft = projectPoint(lat2, lng1);
+		svg_overlay.style("left", topleft.x + "px").style("top", topleft.y + "px");
+
+		rectangles.attr("x", function(d) { return d.x; })
+			.attr("y", function(d) { return d.y; })
+			.attr("width", function(d) { return d.width; })
+			.attr("height", function(d) { return d.height; })
+	    	.attr("fill-opacity", ".2")
+	    	// .attr("fill", function(d) { return "hsl(" + Math.floor((1-d.value)*255) + ", 100%, 50%)"; });
+	    	.attr("fill", function(d) { return "hsl(" + Math.floor((1-d.value)*255) + ", 100%, 50%)"; });
+
 		// function to update the data
 		function update() {
+
+			g_overlay.selectAll("rect").remove()
 
 			// get bounding box of data
 		    var bounds = path.bounds(data),
@@ -103,10 +135,6 @@ function updateData(){
 		    	.attr("cy", function(d) { return projectPoint(d.geometry.coordinates[0], d.geometry.coordinates[1]).y; })
     			.attr("r", function(d) { return Math.pow(d.properties.price,.3); });
 		};
-
-		// call function to 
-		update();
-		map.on("viewreset", update);
 	});
 
 };
