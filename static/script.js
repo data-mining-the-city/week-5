@@ -1,3 +1,5 @@
+
+
 var eventOutputContainer = document.getElementById("message");
 var eventSrc = new EventSource("/eventSource");
 
