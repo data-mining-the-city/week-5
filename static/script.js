@@ -98,8 +98,8 @@ function updateData(){
 		rectangles.enter().append("rect");
 		// rectangles.exit().remove();
 
-		var topleft = projectPoint(lat2, lng1);
-		svg_overlay.style("left", topleft.x + "px").style("top", topleft.y + "px");
+		// var topleft = projectPoint(lat2, lng1);
+		// svg_overlay.style("left", topleft.x + "px").style("top", topleft.y + "px");
 
 		rectangles.attr("x", function(d) { return d.x; })
 			.attr("y", function(d) { return d.y; })
