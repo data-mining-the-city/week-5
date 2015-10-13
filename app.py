@@ -44,13 +44,13 @@ def getData():
 
 	w = float(request.args.get('w'))
 	h = float(request.args.get('h'))
-	res = float(request.args.get('res'))
+	cell_size = float(request.args.get('cell_size'))
 
 	print "received coordinates: [" + lat1 + ", " + lat2 + "], [" + lng1 + ", " + lng2 + "]"
 	
 	client = pyorient.OrientDB("localhost", 2424)
 	session_id = client.connect("root", "password")
-	db_name = "property_test"
+	db_name = "soufun"
 	db_username = "admin"
 	db_password = "admin"
 
@@ -84,33 +84,24 @@ def getData():
 
 		output["features"].append(feature)
 
-	numW = int(math.floor(w/res))
-	numH = int(math.floor(h/res))
-
-	offsetLeft = (w - numW * res) / 2.0 ;
-	offsetTop = (h - numH * res) / 2.0 ;
-
 	q.put('idle')
 
 	output["analysis"] = []
 
-	# grid = []
+	numW = int(math.floor(w/cell_size))
+	numH = int(math.floor(h/cell_size))
 
-	# for j in range(numH):
-	# 	grid.append([])
-	# 	for i in range(numW):
-	# 		grid[-1].append(0)
+	offsetLeft = (w - numW * cell_size) / 2.0 ;
+	offsetTop = (h - numH * cell_size) / 2.0 ;
 
 	for j in range(numH):
 		for i in range(numW):
 			newItem = {}
 
-			newItem['x'] = offsetLeft + i*res
-			newItem['y'] = offsetTop + j*res
-			newItem['width'] = res-1
-			newItem['height'] = res-1
-
-			# newItem['val'] = grid[j][i]
+			newItem['x'] = offsetLeft + i*cell_size
+			newItem['y'] = offsetTop + j*cell_size
+			newItem['width'] = cell_size-1
+			newItem['height'] = cell_size-1
 			newItem['value'] = .5
 
 			output["analysis"].append(newItem)
