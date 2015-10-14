@@ -63,7 +63,9 @@ function updateData(){
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
-	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2 + "&w=" + w + "&h=" + h + "&cell_size=" + cell_size
+	var checked = document.getElementById("heatmap").checked
+
+	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2 + "&w=" + w + "&h=" + h + "&cell_size=" + cell_size + "&analysis=" + checked
 
 	console.log(request);
 
@@ -92,25 +94,28 @@ function updateData(){
 		update();
 		map.on("viewreset", update);
 
-		var topleft = projectPoint(lat2, lng1);
+		if (checked == true){
 
-		svg_overlay.attr("width", w)
-			.attr("height", h)
-			.style("left", topleft.x + "px")
-			.style("top", topleft.y + "px");
+			var topleft = projectPoint(lat2, lng1);
 
-		var rectangles = g_overlay.selectAll("rect").data(data.analysis);
-		rectangles.enter().append("rect");
-		// rectangles.exit().remove();
+			svg_overlay.attr("width", w)
+				.attr("height", h)
+				.style("left", topleft.x + "px")
+				.style("top", topleft.y + "px");
 
-		rectangles
-			.attr("x", function(d) { return d.x; })
-			.attr("y", function(d) { return d.y; })
-			.attr("width", function(d) { return d.width; })
-			.attr("height", function(d) { return d.height; })
-	    	.attr("fill-opacity", ".2")
-	    	.attr("fill", function(d) { return "hsl(0, " + Math.floor(d.value*100) + "%, 50%)"; });
+			var rectangles = g_overlay.selectAll("rect").data(data.analysis);
+			rectangles.enter().append("rect");
+
+			rectangles
+				.attr("x", function(d) { return d.x; })
+				.attr("y", function(d) { return d.y; })
+				.attr("width", function(d) { return d.width; })
+				.attr("height", function(d) { return d.height; })
+		    	.attr("fill-opacity", ".2")
+		    	.attr("fill", function(d) { return "hsl(" + Math.floor((1-d.value)*250) + ", 100%, 50%)"; });
 		
+		};
+
 		// function to update the data
 		function update() {
 
