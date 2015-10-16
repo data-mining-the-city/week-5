@@ -7,6 +7,7 @@ import json
 import time
 import sys
 import random
+import math
 
 import pyorient
 
@@ -40,11 +41,15 @@ def getData():
 	lng1 = str(request.args.get('lng1'))
 	lat2 = str(request.args.get('lat2'))
 	lng2 = str(request.args.get('lng2'))
+	
+	w = float(request.args.get('w'))
+        h = float(request.args.get('h'))
+        cell_size = float(request.args.get('cell_size'))
 
 	print "received coordinates: [" + lat1 + ", " + lat2 + "], [" + lng1 + ", " + lng2 + "]"
 	
 	client = pyorient.OrientDB("localhost", 2424)
-	session_id = client.connect("root", "password")
+	session_id = client.connect("root", "admin")
 	db_name = "soufun"
 	db_username = "admin"
 	db_password = "admin"
@@ -79,7 +84,26 @@ def getData():
 
 		output["features"].append(feature)
 
-	q.put('idle')
+	q.put('starting analysis...')
+	
+	output["analysis"] = []
+	
+	numW = int(math.floor(w/cell_size))
+        numH = int(math.floor(h/cell_size))
+        
+        for j in range(numH):
+            for i in range(numW):
+                newItem = {}
+
+                newItem['x'] = i*cell_size
+                newItem['y'] = j*cell_size
+                newItem['width'] = cell_size-1
+                newItem['height'] = cell_size-1
+                newItem['value'] = .5
+
+                output["analysis"].append(newItem)
+        
+        q.put('idle')
 
 	return json.dumps(output)
 
