@@ -47,9 +47,9 @@ def getData():
 	cell_size = float(request.args.get('cell_size'))
 
 	print "received coordinates: [" + lat1 + ", " + lat2 + "], [" + lng1 + ", " + lng2 + "]"
-	
+
 	client = pyorient.OrientDB("localhost", 2424)
-	session_id = client.connect("root", "password")
+	session_id = client.connect("root", "D92C5E80A666182899D042B007099F47F12A48CCB2352D7BD3329AD10E06370C")
 	db_name = "soufun"
 	db_username = "admin"
 	db_password = "admin"
