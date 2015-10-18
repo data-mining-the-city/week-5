@@ -7,10 +7,12 @@ import json
 import time
 import sys
 import random
+import math
 
 import pyorient
 
 from Queue import Queue
+
 
 app = Flask(__name__)
 
@@ -37,14 +39,18 @@ def getData():
 	q.put("starting data query...")
 
 	lat1 = str(request.args.get('lat1'))
-	lng1 = str(request.args.get('lng1'))
-	lat2 = str(request.args.get('lat2'))
-	lng2 = str(request.args.get('lng2'))
+        lng1 = str(request.args.get('lng1'))
+        lat2 = str(request.args.get('lat2'))
+        lng2 = str(request.args.get('lng2'))
+        
+        w = float(request.args.get('w'))
+        h = float(request.args.get('h'))
+        cell_size = float(request.args.get('cell_size'))
 
 	print "received coordinates: [" + lat1 + ", " + lat2 + "], [" + lng1 + ", " + lng2 + "]"
 	
 	client = pyorient.OrientDB("localhost", 2424)
-	session_id = client.connect("root", "password")
+	session_id = client.connect("root", "root")
 	db_name = "soufun"
 	db_username = "admin"
 	db_password = "admin"
@@ -79,9 +85,26 @@ def getData():
 
 		output["features"].append(feature)
 
-	q.put('idle')
+	q.put('starting analysis...')
+        output["analysis"] = []
 
-	return json.dumps(output)
+        numW = int(math.floor(w/cell_size))
+        numH = int(math.floor(h/cell_size))
+
+        for j in range(numH):
+            for i in range(numW):
+                newItem = {}
+         
+                newItem['x'] = i*cell_size
+                newItem['y'] = j*cell_size
+                newItem['width'] = cell_size-1
+                newItem['height'] = cell_size-1
+                newItem['value'] = .5
+
+            output["analysis"].append(newItem)
+        q.put('idle')
+
+        return json.dumps(output)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',port=5000,debug=True,threaded=True)

@@ -1,3 +1,4 @@
+
 var eventOutputContainer = document.getElementById("message");
 var eventSrc = new EventSource("/eventSource");
 
@@ -10,24 +11,19 @@ var tooltip = d3.select("div.tooltip");
 var tooltip_title = d3.select("#title");
 var tooltip_price = d3.select("#price");
 
-
 var map = L.map('map').setView([22.539029, 114.062076], 16);
 
-//this is the OpenStreetMap tile implementation
-
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-
-//uncomment for Mapbox implementation, and supply your own access token
-
-// L.tileLayer('https://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={accessToken}', {
-// 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-// 	mapid: 'mapbox.light',
-// 	accessToken: [INSERT YOUR TOKEN HERE!]
-// }).addTo(map);
+L.tileLayer('https://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={accessToken}', {
+attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+mapid: 'mapbox.light',
+accessToken: 'pk.eyJ1IjoiYXNmMjE3MSIsImEiOiJjaWZiYmswMnUyaGJ3c21seHYxYXR3emI4In0.qwq7CPON9T4XpeMKIqnQ7Q'
+}).addTo(map)
+;
 
 //create variables to store a reference to svg and g elements
+
+var svg_overlay = d3.select(map.getPanes().overlayPane).append("svg");
+var g_overlay = svg_overlay.append("g").attr("class", "leaflet-zoom-hide");
 
 var svg = d3.select(map.getPanes().overlayPane).append("svg");
 var g = svg.append("g").attr("class", "leaflet-zoom-hide");
@@ -45,14 +41,18 @@ var transform = d3.geo.transform({point: projectStream});
 var path = d3.geo.path().projection(transform);
 
 function updateData(){
-
 	var mapBounds = map.getBounds();
 	var lat1 = mapBounds["_southWest"]["lat"];
 	var lat2 = mapBounds["_northEast"]["lat"];
 	var lng1 = mapBounds["_southWest"]["lng"];
 	var lng2 = mapBounds["_northEast"]["lng"];
 
-	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2
+
+var cell_size = 25;
+var w = window.innerWidth;
+var h = window.innerHeight;
+
+request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2 + "&w=" + w + "&h=" + h + "&cell_size=" + cell_size
 
 	console.log(request);
 
@@ -75,10 +75,38 @@ function updateData(){
 			.on("mouseout", function(){
 				tooltip.style("visibility", "hidden");
 			})
-		;
+			;
+
+		update();
+		map.on("viewreset", update);
+
+			var topleft = projectPoint(lat2, lng1)
+			;
+
+			svg_overlay.attr("width", w)
+    		.attr("height", h)
+    		.style("left", topleft.x + "px")
+    		.style("top", topleft.y + "px")
+    		;
+    		
+    		var rectangles = g_overlay.selectAll("rect").data(data.analysis);rectangles.enter().append("rect")
+    		;
+
+    		rectangles
+		    .attr("x", function(d) { return d.x; })
+    		.attr("y", function(d) { return d.y; })
+		    .attr("width", function(d) { return d.width; })
+    		.attr("height", function(d) { return d.height; })
+    		.attr("fill-opacity", ".2")
+    		.attr("fill", function(d) { return "hsl(0, " + Math.floor(d.value*100) + "%, 50%)"; })
+    		;
+
+
 
 		// function to update the data
 		function update() {
+			g_overlay.selectAll("rect").remove()
+
 
 			// get bounding box of data
 		    var bounds = path.bounds(data),
@@ -103,8 +131,6 @@ function updateData(){
 		};
 
 		// call function to 
-		update();
-		map.on("viewreset", update);
 	});
 
 };

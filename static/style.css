@@ -11,11 +11,12 @@ html, body, #map {
 
 circle {
 	fill-opacity: .3;
-	fill: red;
+	fill: #FF9966;
 	stroke-width: 0px;
-}
+	}
+
 circle:hover {
-	stroke: black;
+	stroke: white;
 	stroke-width: 2px;
 	cursor: crosshair;
 }
@@ -44,6 +45,6 @@ div.menu{
 }
 
 em{
-  color: red;
+  color: blue;
   font-weight: bold;
 }
