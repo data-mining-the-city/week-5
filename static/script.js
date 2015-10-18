@@ -15,22 +15,13 @@ var tooltip_price = d3.select("#price");
 
 var map = L.map('map').setView([22.539029, 114.062076], 16);
 
-//this is the OpenStreetMap tile implementation
-
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+L.tileLayer('https://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={accessToken}', {
+attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+mapid: 'mapbox.light',
+accessToken: 'pk.eyJ1IjoiYXNmMjE3MSIsImEiOiJjaWZiYmswMnUyaGJ3c21seHYxYXR3emI4In0.qwq7CPON9T4XpeMKIqnQ7Q'
 }).addTo(map);
 
-//uncomment for Mapbox implementation, and supply your own access token
-
-// L.tileLayer('https://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={accessToken}', {
-// 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-// 	mapid: 'mapbox.light',
-// 	accessToken: [INSERT YOUR TOKEN HERE!]
-// }).addTo(map);
-
 //create variables to store a reference to svg and g elements
-
 
 
 var svg_overlay = d3.select(map.getPanes().overlayPane).append("svg");
@@ -63,7 +54,8 @@ function updateData(){
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
-	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2 + "&w=" + w + "&h=" + h + "&cell_size=" + cell_size
+	var checked = document.getElementById("heat map").checked
+	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2 + "&w=" + w + "&h=" + h + "&cell_size=" + cell_size + "&analysis=" + checked
 
 	console.log(request);
 
@@ -92,6 +84,7 @@ function updateData(){
 		update();
 		map.on("viewreset", update);
 
+if (checked == true){
 		var topleft = projectPoint(lat2, lng1);
 
 		svg_overlay.attr("width", w)
@@ -109,8 +102,10 @@ function updateData(){
 			.attr("width", function(d) { return d.width; })
 			.attr("height", function(d) { return d.height; })
 	    	.attr("fill-opacity", ".2")
-	    	.attr("fill", function(d) { return "hsl(0, " + Math.floor(d.value*100) + "%, 50%)"; });
+	    	.attr("fill", function(d) { return "hsl(" + Math.floor((1-d.value)*250) + ", 100%, 50%)"; });
+		};
 		
+
 		// function to update the data
 		function update() {
 
