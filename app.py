@@ -97,6 +97,16 @@ def getData():
 	print 'received ' + str(numListings) + ' records'
 
 	client.db_close()
+	
+	maxprice=0
+        minprice=1000000000000000000000000
+  
+        for record in records:
+	    print record.price
+            if record.price>maxprice:
+               maxprice = record.price
+            if record.price<minprice:
+               minprice = record.price
 
 	output = {"type":"FeatureCollection","features":[]}
 
@@ -105,6 +115,7 @@ def getData():
 		feature["id"] = record._rid
 		feature["properties"]["name"] = record.title
 		feature["properties"]["price"] = record.price
+		feature["properties"]["normprice"] = remap(record.price, minprice, maxprice, 0, 1)
 		feature["geometry"]["coordinates"] = [record.latitude, record.longitude]
 
 		output["features"].append(feature)
