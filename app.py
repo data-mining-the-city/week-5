@@ -74,7 +74,7 @@ def getData():
 	print "received coordinates: [" + lat1 + ", " + lat2 + "], [" + lng1 + ", " + lng2 + "]"
 	
 	client = pyorient.OrientDB("localhost", 2424)
-	session_id = client.connect("root", "password")
+	session_id = client.connect("root", "spot")
 	db_name = "soufun"
 	db_username = "admin"
 	db_password = "admin"
@@ -99,6 +99,15 @@ def getData():
 	client.db_close()
 
 	#ITERATE THROUGH THE DATA SET TO FIND THE MINIMUM AND MAXIMUM PRICE (YOU DID THIS IN A PREVIOUS ASSIGNMENT)
+        maxprice=0
+        minprice=999999999999
+ 
+        for record in records:
+            print record.price
+            if record.price>maxprice:
+                maxprice = record.price
+            if record.price<minprice:
+                minprice = record.price
 
 	output = {"type":"FeatureCollection","features":[]}
 
@@ -110,6 +119,8 @@ def getData():
 		#ADD THE NORMALIZED PRICE AS A PROPERTY TO THE DATA COMING BACK FROM THE SERVER
 		#REMEMBER TO USE THE REMAP() HELPER FUNCTION WE DEFINED EARLIER
 		feature["geometry"]["coordinates"] = [record.latitude, record.longitude]
+		
+		feature["properties"]["normprice"] = remap(record.price, minprice, maxprice, 0, 1)
 
 		output["features"].append(feature)
 
@@ -137,7 +148,8 @@ def getData():
 		pos_y = int(remap(record.latitude, lat1, lat2, numH, 0))
 
 		#TRY TESTING DIFFERENT VALUES FOR THE SPREAD FACTOR TO SEE HOW THE HEAT MAP VISUALIZATION CHANGES
-		spread = 12
+		#12 default
+		spread = 24
 
 		for j in range(max(0, (pos_y-spread)), min(numH, (pos_y+spread))):
 			for i in range(max(0, (pos_x-spread)), min(numW, (pos_x+spread))):

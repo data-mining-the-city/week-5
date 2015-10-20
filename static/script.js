@@ -1,5 +1,3 @@
-
-
 var eventOutputContainer = document.getElementById("message");
 var eventSrc = new EventSource("/eventSource");
 
@@ -17,9 +15,9 @@ var map = L.map('map').setView([22.539029, 114.062076], 16);
 
 //this is the OpenStreetMap tile implementation
 
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+//L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+	//attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+//}).addTo(map);
 
 //uncomment for Mapbox implementation, and supply your own access token
 
@@ -30,6 +28,11 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 // }).addTo(map);
 
 //create variables to store a reference to svg and g elements
+L.tileLayer('https://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={accessToken}', {
+		 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+		 	mapid: 'mapbox.dark',
+		 	accessToken: ['pk.eyJ1IjoiY2FtbW1tbW1tIiwiYSI6ImNpZjdudnRydjB0eWVzcWtyNDd2YnNqazEifQ.sStiq8QeT1cR6w8R1Oiy6A']
+		 }).addTo(map);
 
 
 
@@ -60,7 +63,7 @@ function updateData(){
 	var lng2 = mapBounds["_northEast"]["lng"];
 
 	// TEST VARIATIONS OF CELL SIZES TO CHANGE THE RESOLUTION OF THE ANALYSIS OVERLAY
-	var cell_size = 25;
+	var cell_size = 15;
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
@@ -92,6 +95,9 @@ function updateData(){
 			// USING .attr("fill", ), ADD A PROPERTY FOR THE CIRCLES TO DEFINE THEIR COLOR BASED ON THE NORMALIZED PRICE
 			// IMPLEMENT THE PRICE NORMALIZATION ON THE SERVER AND SEND WITH THE REST OF THE DATA BACK TO THE CLIENT
 			// REMEMBER TO REMOVE THE FILL STYLING FOR THE CIRCLES FROM THE style.css FILE OR THIS WILL OVERRIDE THE NEW COLOR
+			.attr("fill", function(d){ 
+				return "hsl(" + Math.floor(d.properties.normprice*100+150) + ", 100%, 70%)"; 
+			})
 		;
 
 		// call function to update geometry
@@ -152,3 +158,5 @@ function updateData(){
 };
 
 updateData();
+
+
