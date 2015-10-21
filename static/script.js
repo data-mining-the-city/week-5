@@ -59,7 +59,7 @@ function updateData(){
 	var lng1 = mapBounds["_southWest"]["lng"];
 	var lng2 = mapBounds["_northEast"]["lng"];
 
-	var cell_size = 25;
+	var cell_size = 20;
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
@@ -87,6 +87,9 @@ function updateData(){
 			})
 			.on("mouseout", function(){
 				tooltip.style("visibility", "hidden");
+			})
+			.attr("fill",function(d){
+				return "hsl("+Math.fllor(d.properties.normprice*100+150)+", 100%,50%)";
 			})
 		;
 
