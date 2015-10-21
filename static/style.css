@@ -1,7 +1,7 @@
 body {
 	padding: 0;
 	margin: 0;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Garamond, Arial, sans-serif;
 	font-size: 12px;
 	line-height: 18px;
 }
@@ -40,10 +40,10 @@ div.menu{
 	right: 0px;
 	width: 250px;
 	height: 500px;
-	background: rgba(255,255,255,.8);
+	background: rgba(255,255,255,.4);
 }
 
 em{
-  color: red;
+  color: orange;
   font-weight: bold;
 }
