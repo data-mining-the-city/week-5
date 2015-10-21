@@ -1,5 +1,3 @@
-
-
 var eventOutputContainer = document.getElementById("message");
 var eventSrc = new EventSource("/eventSource");
 
@@ -15,19 +13,12 @@ var tooltip_price = d3.select("#price");
 
 var map = L.map('map').setView([22.539029, 114.062076], 16);
 
-//this is the OpenStreetMap tile implementation
 
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+L.tileLayer('https://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={accessToken}', {
+attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+mapid: 'mapbox.light',
+accessToken: 'pk.eyJ1IjoiYXNmMjE3MSIsImEiOiJjaWZiYmswMnUyaGJ3c21seHYxYXR3emI4In0.qwq7CPON9T4XpeMKIqnQ7Q'
 }).addTo(map);
-
-//uncomment for Mapbox implementation, and supply your own access token
-
-// L.tileLayer('https://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={accessToken}', {
-// 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-// 	mapid: 'mapbox.light',
-// 	accessToken: [INSERT YOUR TOKEN HERE!]
-// }).addTo(map);
 
 //create variables to store a reference to svg and g elements
 
@@ -59,8 +50,8 @@ function updateData(){
 	var lng1 = mapBounds["_southWest"]["lng"];
 	var lng2 = mapBounds["_northEast"]["lng"];
 
-	// TEST VARIATIONS OF CELL SIZES TO CHANGE THE RESOLUTION OF THE ANALYSIS OVERLAY
-	var cell_size = 25;
+	// TEST VARIATIONS OF CELL SIZES TO CHANGE THE RESOLUTION OF THE ANALYSIS OVERLAY  
+	var cell_size = 20;
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
@@ -89,9 +80,14 @@ function updateData(){
 			.on("mouseout", function(){
 				tooltip.style("visibility", "hidden");
 			})
+
 			// USING .attr("fill", ), ADD A PROPERTY FOR THE CIRCLES TO DEFINE THEIR COLOR BASED ON THE NORMALIZED PRICE
 			// IMPLEMENT THE PRICE NORMALIZATION ON THE SERVER AND SEND WITH THE REST OF THE DATA BACK TO THE CLIENT
 			// REMEMBER TO REMOVE THE FILL STYLING FOR THE CIRCLES FROM THE style.css FILE OR THIS WILL OVERRIDE THE NEW COLOR
+
+			.attr("fill", function(d){return "hsl(" + Math.floor(d.properties.normprice*100+150) + ", 80%, 60%)"; 
+			}) 
+
 		;
 
 		// call function to update geometry

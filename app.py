@@ -8,6 +8,8 @@ import time
 import sys
 import random
 import math
+import numpy
+
 
 import pyorient
 
@@ -74,7 +76,7 @@ def getData():
 	print "received coordinates: [" + lat1 + ", " + lat2 + "], [" + lng1 + ", " + lng2 + "]"
 	
 	client = pyorient.OrientDB("localhost", 2424)
-	session_id = client.connect("root", "password")
+	session_id = client.connect("root", "root")
 	db_name = "soufun"
 	db_username = "admin"
 	db_password = "admin"
@@ -97,6 +99,16 @@ def getData():
 	print 'received ' + str(numListings) + ' records'
 
 	client.db_close()
+	
+        maxprice=0
+        minprice=999999999999
+  
+        for record in records:
+            print record.price
+            if record.price>maxprice:
+                maxprice = record.price
+            if record.price<minprice:
+                minprice = record.price
 
 	#ITERATE THROUGH THE DATA SET TO FIND THE MINIMUM AND MAXIMUM PRICE (YOU DID THIS IN A PREVIOUS ASSIGNMENT)
 
@@ -107,6 +119,8 @@ def getData():
 		feature["id"] = record._rid
 		feature["properties"]["name"] = record.title
 		feature["properties"]["price"] = record.price
+                feature["properties"]["normprice"] = remap(record.price, minprice, maxprice, 0, 1)
+
 		#ADD THE NORMALIZED PRICE AS A PROPERTY TO THE DATA COMING BACK FROM THE SERVER
 		#REMEMBER TO USE THE REMAP() HELPER FUNCTION WE DEFINED EARLIER
 		feature["geometry"]["coordinates"] = [record.latitude, record.longitude]
@@ -137,7 +151,7 @@ def getData():
 		pos_y = int(remap(record.latitude, lat1, lat2, numH, 0))
 
 		#TRY TESTING DIFFERENT VALUES FOR THE SPREAD FACTOR TO SEE HOW THE HEAT MAP VISUALIZATION CHANGES
-		spread = 12
+		spread = 5
 
 		for j in range(max(0, (pos_y-spread)), min(numH, (pos_y+spread))):
 			for i in range(max(0, (pos_x-spread)), min(numW, (pos_x+spread))):
@@ -163,6 +177,7 @@ def getData():
 	q.put('idle')
 
 	return json.dumps(output)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',port=5000,debug=True,threaded=True)

@@ -1,15 +1,16 @@
 <html>
 <head>
-	<title>DMC Web Stack</title>
+	<title>Andrea's Heat Map</title>
 	<script type="text/javascript" src="./static/lib/d3.js"></script>
 	<script type="text/javascript" src="./static/lib/leaflet.js"></script>
 	<link rel="stylesheet" href="./static/lib/leaflet.css" />
 
-	<!-- import external stylesheet -->
 	<link rel="stylesheet" href="./static/style.css" />
+	<script type="text/javascript" src="./static/script.js"></script>
+
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
+	
 </head>
 <body>
 
@@ -21,7 +22,7 @@
 	</div>
 
 	<div class="menu">
-		<p><h4>DMC Web Stack</h4></p>
+		<p><h4>Property Heat Map</h4></p>
 		<form>
 			<p><input id="heatmap" type="checkbox">Heat Map</p>
 			<p><input type="button" value="Update Data" onclick="updateData()"></p>
@@ -31,6 +32,8 @@
 
 	<!-- import external script -->
 	<script type="text/javascript" src="./static/script.js"></script>
+
+
 
 
 </body>
