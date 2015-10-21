@@ -63,7 +63,9 @@ function updateData(){
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
-	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2 + "&w=" + w + "&h=" + h + "&cell_size=" + cell_size
+	var checked = document.getElementById("heat map").checked
+
+	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2 + "&w=" + w + "&h=" + h + "&cell_size=" + cell_size + "&analysis=" + checked
 
 	console.log(request);
 
@@ -92,6 +94,8 @@ function updateData(){
 		update();
 		map.on("viewreset", update);
 
+	if (checked == true){
+
 		var topleft = projectPoint(lat2, lng1);
 
 		svg_overlay.attr("width", w)
@@ -104,12 +108,13 @@ function updateData(){
 		// rectangles.exit().remove();
 
 		rectangles
-			.attr("x", function(d) { return d.x; })
-			.attr("y", function(d) { return d.y; })
-			.attr("width", function(d) { return d.width; })
-			.attr("height", function(d) { return d.height; })
-	    	.attr("fill-opacity", ".2")
-	    	.attr("fill", function(d) { return "hsl(0, " + Math.floor(d.value*100) + "%, 50%)"; });
+				.attr("x", function(d) { return d.x; })
+				.attr("y", function(d) { return d.y; })
+				.attr("width", function(d) { return d.width; })
+				.attr("height", function(d) { return d.height; })
+	    .attr("fill-opacity", ".2")
+	    .attr("fill", function(d) { return "hsl(" + Math.floor((1-d.value)*250) + ", 100%, 50%)"; });
+		};
 		
 		// function to update the data
 		function update() {
