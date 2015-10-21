@@ -65,7 +65,7 @@ function updateData(){
 
 	var checked = document.getElementById("heat map").checked
 
-	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2 + "&w=" + w + "&h=" + h + "&cell_size=" + cell_size + "&analysis=" + checked
+	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2 + "&w=" + w + "&h=" + h + "&cell_size=" + cell_size //+ "&analysis=" + checked
 
 	console.log(request);
 
@@ -114,7 +114,7 @@ function updateData(){
 				.attr("height", function(d) { return d.height; })
 	    .attr("fill-opacity", ".2")
 	    .attr("fill", function(d) { return "hsl(" + Math.floor((1-d.value)*250) + ", 100%, 50%)"; });
-		};
+	};
 		
 		// function to update the data
 		function update() {
