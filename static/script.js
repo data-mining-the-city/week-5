@@ -59,12 +59,12 @@ function updateData(){
 	var lng1 = mapBounds["_southWest"]["lng"];
 	var lng2 = mapBounds["_northEast"]["lng"];
 
-<<<<<<< HEAD
+
 	var cell_size = 20;
-=======
+
 	// TEST VARIATIONS OF CELL SIZES TO CHANGE THE RESOLUTION OF THE ANALYSIS OVERLAY
 	var cell_size = 25;
->>>>>>> origin/04-assignment
+
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
@@ -93,15 +93,15 @@ function updateData(){
 			.on("mouseout", function(){
 				tooltip.style("visibility", "hidden");
 			})
-<<<<<<< HEAD
+
 			.attr("fill",function(d){
 				return "hsl("+Math.fllor(d.properties.normprice*100+150)+", 100%,50%)";
 			})
-=======
+
 			// USING .attr("fill", ), ADD A PROPERTY FOR THE CIRCLES TO DEFINE THEIR COLOR BASED ON THE NORMALIZED PRICE
 			// IMPLEMENT THE PRICE NORMALIZATION ON THE SERVER AND SEND WITH THE REST OF THE DATA BACK TO THE CLIENT
 			// REMEMBER TO REMOVE THE FILL STYLING FOR THE CIRCLES FROM THE style.css FILE OR THIS WILL OVERRIDE THE NEW COLOR
->>>>>>> origin/04-assignment
+
 		;
 
 		// call function to update geometry
