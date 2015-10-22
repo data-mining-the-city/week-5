@@ -17,21 +17,19 @@ var map = L.map('map').setView([22.539029, 114.062076], 16);
 
 //this is the OpenStreetMap tile implementation
 
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+//L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+	//battribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+//}).addTo(map);
 
 //uncomment for Mapbox implementation, and supply your own access token
 
-// L.tileLayer('https://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={accessToken}', {
-// 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-// 	mapid: 'mapbox.light',
-// 	accessToken: [INSERT YOUR TOKEN HERE!]
-// }).addTo(map);
+L.tileLayer('https://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={accessToken}', {
+ 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+ 	mapid: 'mapbox.light',
+ 	accessToken: 'pk.eyJ1IjoieXV0aW5nemhhbmdldmVseW4iLCJhIjoiY2lmNjRnaDdqMDJ1M3Nra3RncWMxczFzbyJ9.aGAm_dSZM38b3_Bz8LPqVA'
+ }).addTo(map);
 
 //create variables to store a reference to svg and g elements
-
-
 
 var svg_overlay = d3.select(map.getPanes().overlayPane).append("svg");
 var g_overlay = svg_overlay.append("g").attr("class", "leaflet-zoom-hide");
@@ -59,7 +57,7 @@ function updateData(){
 	var lng1 = mapBounds["_southWest"]["lng"];
 	var lng2 = mapBounds["_northEast"]["lng"];
 
-	var cell_size = 25;
+	var cell_size = 35;
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
@@ -88,8 +86,12 @@ function updateData(){
 			.on("mouseout", function(){
 				tooltip.style("visibility", "hidden");
 			})
-		;
 
+            .attr("fill", function(d){ 
+				return "hsl(" + Math.floor(d.properties.normprice*100+150) + ", 100%, 70%)"; 
+			})
+		;
+       
 		// call function to update geometry
 		update();
 		map.on("viewreset", update);

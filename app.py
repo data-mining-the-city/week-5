@@ -98,6 +98,16 @@ def getData():
 
 	client.db_close()
 
+        maxprice=0
+        minprice=10000000000
+ 
+        for record in records:
+            print record.price
+            if record.price>maxprice:
+                maxprice = record.price
+            if record.price<minprice:
+                minprice = record.price
+
 	output = {"type":"FeatureCollection","features":[]}
 
 	for record in records:
@@ -107,7 +117,8 @@ def getData():
 		feature["properties"]["price"] = record.price
 		feature["geometry"]["coordinates"] = [record.latitude, record.longitude]
 
-		output["features"].append(feature)
+        feature["properties"]["normprice"] = remap(record.price, minprice, maxprice, 0, 1)
+        output["features"].append(feature)
 
 	if analysis == "false":
 		q.put('idle')
@@ -132,7 +143,7 @@ def getData():
 		pos_x = int(remap(record.longitude, lng1, lng2, 0, numW))
 		pos_y = int(remap(record.latitude, lat1, lat2, numH, 0))
 
-		spread = 12
+		spread = 36
 
 		for j in range(max(0, (pos_y-spread)), min(numH, (pos_y+spread))):
 			for i in range(max(0, (pos_x-spread)), min(numW, (pos_x+spread))):
