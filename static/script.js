@@ -11,6 +11,8 @@ eventSrc.onmessage = function(e) {
 var tooltip = d3.select("div.tooltip");
 var tooltip_title = d3.select("#title");
 var tooltip_price = d3.select("#price");
+var tooltip_norm_price = d3.select("#Norm_Price");
+
 
 
 var map = L.map('map').setView([22.539029, 114.062076], 16);
@@ -60,7 +62,7 @@ function updateData(){
 	var lng2 = mapBounds["_northEast"]["lng"];
 
 	// TEST VARIATIONS OF CELL SIZES TO CHANGE THE RESOLUTION OF THE ANALYSIS OVERLAY
-	var cell_size = 25;
+	var cell_size = 10;
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
@@ -81,6 +83,8 @@ function updateData(){
 				tooltip.style("visibility", "visible");
 				tooltip_title.text(d.properties.name);
 				tooltip_price.text("Price: " + d.properties.price);
+				tooltip_norm_price.text("Normalized Price: " + d.properties.Norm_Price);
+
 			})
 			.on("mousemove", function(){
 				tooltip.style("top", (d3.event.pageY-10)+"px")
@@ -89,6 +93,9 @@ function updateData(){
 			.on("mouseout", function(){
 				tooltip.style("visibility", "hidden");
 			})
+			.attr("fill-opacity", ".3")
+			.attr("fill", function(d) { return "rgb(" + Math.floor(d.properties.Norm_Price*255) + ", 0, 0)"; });
+			//.attr("fill", function(d) { return "hsl(" + Math.floor((1-d.properties.Norm_Price)*250) + ",100%, 50%)"; });
 			// USING .attr("fill", ), ADD A PROPERTY FOR THE CIRCLES TO DEFINE THEIR COLOR BASED ON THE NORMALIZED PRICE
 			// IMPLEMENT THE PRICE NORMALIZATION ON THE SERVER AND SEND WITH THE REST OF THE DATA BACK TO THE CLIENT
 			// REMEMBER TO REMOVE THE FILL STYLING FOR THE CIRCLES FROM THE style.css FILE OR THIS WILL OVERRIDE THE NEW COLOR
