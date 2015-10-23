@@ -11,7 +11,7 @@ html, body, #map {
 
 circle {
 	fill-opacity: .3;
-	fill: red;
+
 	stroke-width: 0px;
 }
 circle:hover {
