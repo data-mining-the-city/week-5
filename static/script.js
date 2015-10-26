@@ -60,7 +60,7 @@ function updateData(){
 	var lng2 = mapBounds["_northEast"]["lng"];
 
 	// TEST VARIATIONS OF CELL SIZES TO CHANGE THE RESOLUTION OF THE ANALYSIS OVERLAY
-	var cell_size = 25;
+	var cell_size = 20;
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
@@ -88,6 +88,10 @@ function updateData(){
 			})
 			.on("mouseout", function(){
 				tooltip.style("visibility", "hidden");
+			})
+
+			.attr("fill", function(d){ 
+				return "hsl(" + Math.floor(d.properties.normprice*100+150) + ", 100%, 70%)"; 
 			})
 			// USING .attr("fill", ), ADD A PROPERTY FOR THE CIRCLES TO DEFINE THEIR COLOR BASED ON THE NORMALIZED PRICE
 			// IMPLEMENT THE PRICE NORMALIZATION ON THE SERVER AND SEND WITH THE REST OF THE DATA BACK TO THE CLIENT
