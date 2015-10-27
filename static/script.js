@@ -64,7 +64,7 @@ function updateData(){
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
-	var checked = document.getElementById("heatmap").checked
+	var checked = document.getElementById("heat map").checked
 
 	request = "/getData?lat1=" + lat1 + "&lat2=" + lat2 + "&lng1=" + lng1 + "&lng2=" + lng2 + "&w=" + w + "&h=" + h + "&cell_size=" + cell_size + "&analysis=" + checked
 
@@ -92,6 +92,9 @@ function updateData(){
 			// USING .attr("fill", ), ADD A PROPERTY FOR THE CIRCLES TO DEFINE THEIR COLOR BASED ON THE NORMALIZED PRICE
 			// IMPLEMENT THE PRICE NORMALIZATION ON THE SERVER AND SEND WITH THE REST OF THE DATA BACK TO THE CLIENT
 			// REMEMBER TO REMOVE THE FILL STYLING FOR THE CIRCLES FROM THE style.css FILE OR THIS WILL OVERRIDE THE NEW COLOR
+			.attr("fill", function(d){
+			    return "hsl(" + Math.floor((1-d.properties.normalizedprice)*250) + ", 100%, 50%)";
+			})		      
 		;
 
 		// call function to update geometry
