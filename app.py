@@ -74,7 +74,7 @@ def getData():
 	print "received coordinates: [" + lat1 + ", " + lat2 + "], [" + lng1 + ", " + lng2 + "]"
 	
 	client = pyorient.OrientDB("localhost", 2424)
-	session_id = client.connect("root", "password")
+	session_id = client.connect("root", "5C7B1C9A6994A28ECFE8FB8D2E15AD7232F5B6171E72C6D3ABE437901685E33F")
 	db_name = "soufun"
 	db_username = "admin"
 	db_password = "admin"
@@ -101,6 +101,16 @@ def getData():
 	#ITERATE THROUGH THE DATA SET TO FIND THE MINIMUM AND MAXIMUM PRICE (YOU DID THIS IN A PREVIOUS ASSIGNMENT)
 
 	output = {"type":"FeatureCollection","features":[]}
+	
+	max_price = (-1)*float('inf')
+	min_price = float('inf')
+	
+        for record in records:
+	    if (record.price > max_price):
+	       max_price = record.price
+	    if (record.price < min_price):
+	       min_price = record.price
+	    
 
 	for record in records:
 		feature = {"type":"Feature","properties":{},"geometry":{"type":"Point"}}
@@ -109,6 +119,7 @@ def getData():
 		feature["properties"]["price"] = record.price
 		#ADD THE NORMALIZED PRICE AS A PROPERTY TO THE DATA COMING BACK FROM THE SERVER
 		#REMEMBER TO USE THE REMAP() HELPER FUNCTION WE DEFINED EARLIER
+		feature["properties"]["normalizedprice"]=remap(record.price,min_price,max_price,0,1)
 		feature["geometry"]["coordinates"] = [record.latitude, record.longitude]
 
 		output["features"].append(feature)
