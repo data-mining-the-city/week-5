@@ -114,27 +114,27 @@ def getData():
 	numW = int(math.floor(w/cell_size))
 	numH = int(math.floor(h/cell_size))
 
-    grid = []
+    grid=[]
 
     for j in range(numH):
-    grid.append([])
-    for i in range(numW):
-        grid[j].append(0)
+        grid.append([])
+        for i in range(numW):
+            grid[j].append(0)
 
-        for record in records:
+    for record in records:
 
-    pos_x = int(remap(record.longitude, lng1, lng2, 0, numW))
-    pos_y = int(remap(record.latitude, lat1, lat2, numH, 0))
+        pos_x = int(remap(record.longitude, lng1, lng2, 0, numW))
+        pos_y = int(remap(record.latitude, lat1, lat2, numH, 0))
 
-    spread = 15
+        spread = 15
 
-    for j in range(max(0, (pos_y-spread)), min(numH, (pos_y+spread))):
-        for i in range(max(0, (pos_x-spread)), min(numW, (pos_x+spread))):
-            grid[j][i] += 2 * math.exp((-point_distance(i,j,pos_x,pos_y)**2)/(2*5**2))
+        for j in range(max(0, (pos_y-spread)), min(numH, (pos_y+spread))):
+            for i in range(max(0, (pos_x-spread)), min(numW, (pos_x+spread))):
+                grid[j][i] += 2 * math.exp((-point_distance(i,j,pos_x,pos_y)**2)/(2*5**2))
 
     grid = normalizeArray(grid)
 
-	offsetLeft = (w - numW * cell_size) / 2.0 ;
+    offsetLeft = (w - numW * cell_size) / 2.0 ;
 	offsetTop = (h - numH * cell_size) / 2.0 ;
 
 	for j in range(numH):
