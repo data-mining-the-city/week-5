@@ -98,6 +98,15 @@ def getData():
 
 	client.db_close()
 
+	maxPrice = 0
+	minPrice = 100000000000
+
+	for record in records:
+			if record > maxPrice:
+				maxPrice = record
+			if record < minPrice:
+				minPrice = record
+
 	#ITERATE THROUGH THE DATA SET TO FIND THE MINIMUM AND MAXIMUM PRICE (YOU DID THIS IN A PREVIOUS ASSIGNMENT)
 
 	output = {"type":"FeatureCollection","features":[]}
@@ -107,6 +116,7 @@ def getData():
 		feature["id"] = record._rid
 		feature["properties"]["name"] = record.title
 		feature["properties"]["price"] = record.price
+		feature["properties"]["normal"] = remap(record.price, minPrice, maxPrice, 0, 1)
 		#ADD THE NORMALIZED PRICE AS A PROPERTY TO THE DATA COMING BACK FROM THE SERVER
 		#REMEMBER TO USE THE REMAP() HELPER FUNCTION WE DEFINED EARLIER
 		feature["geometry"]["coordinates"] = [record.latitude, record.longitude]
@@ -137,7 +147,7 @@ def getData():
 		pos_y = int(remap(record.latitude, lat1, lat2, numH, 0))
 
 		#TRY TESTING DIFFERENT VALUES FOR THE SPREAD FACTOR TO SEE HOW THE HEAT MAP VISUALIZATION CHANGES
-		spread = 12
+		spread = 5
 
 		for j in range(max(0, (pos_y-spread)), min(numH, (pos_y+spread))):
 			for i in range(max(0, (pos_x-spread)), min(numW, (pos_x+spread))):

@@ -17,17 +17,17 @@ var map = L.map('map').setView([22.539029, 114.062076], 16);
 
 //this is the OpenStreetMap tile implementation
 
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+// L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+// 	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+// }).addTo(map);
 
 //uncomment for Mapbox implementation, and supply your own access token
 
-// L.tileLayer('https://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={accessToken}', {
-// 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-// 	mapid: 'mapbox.light',
-// 	accessToken: [INSERT YOUR TOKEN HERE!]
-// }).addTo(map);
+		L.tileLayer('https://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={accessToken}', {
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			mapid: 'mapbox.light',
+			accessToken: 'pk.eyJ1Ijoic2t5bGFyYnIiLCJhIjoiY2lmaW84czRuYm5ybXJ5bHh5YnM5a3lzdiJ9.EFoA13UUx70WH41vhjRyuw'
+		}).addTo(map);
 
 //create variables to store a reference to svg and g elements
 
@@ -60,7 +60,7 @@ function updateData(){
 	var lng2 = mapBounds["_northEast"]["lng"];
 
 	// TEST VARIATIONS OF CELL SIZES TO CHANGE THE RESOLUTION OF THE ANALYSIS OVERLAY
-	var cell_size = 25;
+	var cell_size = 50;
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
@@ -89,6 +89,10 @@ function updateData(){
 			.on("mouseout", function(){
 				tooltip.style("visibility", "hidden");
 			})
+
+		circles
+			.attr("fill", function(d) { return "hsl(" + Math.floor((1-d.properties.normal)*250) + ", 100%, 50%)"; });
+
 			// USING .attr("fill", ), ADD A PROPERTY FOR THE CIRCLES TO DEFINE THEIR COLOR BASED ON THE NORMALIZED PRICE
 			// IMPLEMENT THE PRICE NORMALIZATION ON THE SERVER AND SEND WITH THE REST OF THE DATA BACK TO THE CLIENT
 			// REMEMBER TO REMOVE THE FILL STYLING FOR THE CIRCLES FROM THE style.css FILE OR THIS WILL OVERRIDE THE NEW COLOR
