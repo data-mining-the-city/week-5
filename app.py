@@ -99,6 +99,15 @@ def getData():
 	client.db_close()
 
 	#ITERATE THROUGH THE DATA SET TO FIND THE MINIMUM AND MAXIMUM PRICE (YOU DID THIS IN A PREVIOUS ASSIGNMENT)
+maxprice=0
+minprice=999999999999
+  
+for record in records:
+    print record.price
+    if record.price>maxprice:
+        maxprice = record.price
+    if record.price<minprice:
+        minprice = record.price
 
 	output = {"type":"FeatureCollection","features":[]}
 
@@ -109,6 +118,7 @@ def getData():
 		feature["properties"]["price"] = record.price
 		#ADD THE NORMALIZED PRICE AS A PROPERTY TO THE DATA COMING BACK FROM THE SERVER
 		#REMEMBER TO USE THE REMAP() HELPER FUNCTION WE DEFINED EARLIER
+		feature["properties"]["normprice"] = remap(record.price, minprice, maxprice, 0, 1)
 		feature["geometry"]["coordinates"] = [record.latitude, record.longitude]
 
 		output["features"].append(feature)
@@ -117,48 +127,48 @@ def getData():
 		q.put('idle')
 		return json.dumps(output)
 
-	q.put('starting analysis...')
+        q.put('starting analysis...')
 
-	output["analysis"] = []
+        output["analysis"] = []
 
-	numW = int(math.floor(w/cell_size))
-	numH = int(math.floor(h/cell_size))
+        numW = int(math.floor(w/cell_size))
+        numH = int(math.floor(h/cell_size))
 
-	grid = []
+        grid = []
 
-	for j in range(numH):
-		grid.append([])
-		for i in range(numW):
-			grid[j].append(0)
+    for j in range(numH):
+        grid.append([])
+        for i in range(numW):
+	   grid[j].append(0)
 
-	for record in records:
+    for record in records:
 
-		pos_x = int(remap(record.longitude, lng1, lng2, 0, numW))
-		pos_y = int(remap(record.latitude, lat1, lat2, numH, 0))
+	pos_x = int(remap(record.longitude, lng1, lng2, 0, numW))
+	pos_y = int(remap(record.latitude, lat1, lat2, numH, 0))
 
 		#TRY TESTING DIFFERENT VALUES FOR THE SPREAD FACTOR TO SEE HOW THE HEAT MAP VISUALIZATION CHANGES
-		spread = 12
+        spread = 10
 
-		for j in range(max(0, (pos_y-spread)), min(numH, (pos_y+spread))):
-			for i in range(max(0, (pos_x-spread)), min(numW, (pos_x+spread))):
-				grid[j][i] += 2 * math.exp((-point_distance(i,j,pos_x,pos_y)**2)/(2*(spread/2)**2))
+        for j in range(max(0, (pos_y-spread)), min(numH, (pos_y+spread))):
+            for i in range(max(0, (pos_x-spread)), min(numW, (pos_x+spread))):
+                grid[j][i] += 2 * math.exp((-point_distance(i,j,pos_x,pos_y)**2)/(2*(spread/2)**2))
 
-	grid = normalizeArray(grid)
+    grid = normalizeArray(grid)
 
-	offsetLeft = (w - numW * cell_size) / 2.0
-	offsetTop = (h - numH * cell_size) / 2.0
+    offsetLeft = (w - numW * cell_size) / 2.0
+    offsetTop = (h - numH * cell_size) / 2.0
 
-	for j in range(numH):
-		for i in range(numW):
-			newItem = {}
+    for j in range(numH):
+        for i in range(numW):
+	   newItem = {}
 
-			newItem['x'] = offsetLeft + i*cell_size
-			newItem['y'] = offsetTop + j*cell_size
-			newItem['width'] = cell_size-1
-			newItem['height'] = cell_size-1
-			newItem['value'] = grid[j][i]
+	   newItem['x'] = offsetLeft + i*cell_size
+	   newItem['y'] = offsetTop + j*cell_size
+	   newItem['width'] = cell_size-1
+	   newItem['height'] = cell_size-1
+	   newItem['value'] = grid[j][i]
 
-			output["analysis"].append(newItem)
+	   output["analysis"].append(newItem)
 
 	q.put('idle')
 
